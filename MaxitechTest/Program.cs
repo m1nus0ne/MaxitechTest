@@ -10,6 +10,21 @@ public static class Program
         if (string.IsNullOrEmpty(input))
             return;
 
+        var invalidChars = input.Where(ch => ch is < 'a' or > 'z').ToArray();
+
+        if (invalidChars.Length != 0)
+        {
+            Console.WriteLine("Введены неподходящие символы: " + new string(invalidChars));
+        }
+        else
+        {
+            var result = GetReversed(input);
+            Console.WriteLine(result);
+        }
+    }
+
+    private static string GetReversed(string input)
+    {
         var n = input.Length;
         var result = new StringBuilder { Capacity = 2 * n };
 
@@ -28,6 +43,6 @@ public static class Program
             result.Append(input);
         }
 
-        Console.WriteLine(result);
+        return result.ToString();
     }
 }
