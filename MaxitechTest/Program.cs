@@ -20,6 +20,12 @@ public static class Program
         {
             var result = GetReversed(input);
             Console.WriteLine(result);
+
+            var stats = CountCharacters(result);
+            foreach (var stat in stats)
+            {
+                Console.WriteLine($"{stat.Key}: {stat.Value}");
+            };
         }
     }
 
@@ -42,7 +48,16 @@ public static class Program
                 result.Append(input[i]);
             result.Append(input);
         }
-
         return result.ToString();
+    }
+    private static Dictionary<char, int> CountCharacters(string input)
+    {
+        var counts = new Dictionary<char, int>();
+        foreach (var ch in input)
+        {
+            if (!counts.TryAdd(ch, 1))
+                counts[ch]++;
+        }
+        return counts;
     }
 }
