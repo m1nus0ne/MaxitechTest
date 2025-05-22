@@ -4,6 +4,8 @@ namespace MaxitechTest;
 
 public static class Program
 {
+    private static char[] Vowels { get; } = ['a', 'e', 'i', 'o', 'u', 'y'];
+
     public static void Main(string[] args)
     {
         var input = Console.ReadLine();
@@ -26,6 +28,7 @@ public static class Program
             {
                 Console.WriteLine($"{stat.Key}: {stat.Value}");
             };
+            Console.WriteLine(MaxVowelsSubstring(result));
         }
     }
 
@@ -59,5 +62,12 @@ public static class Program
                 counts[ch]++;
         }
         return counts;
+    }
+
+    private static string MaxVowelsSubstring(string input)
+    {
+        var startIndex = input.IndexOfAny(Vowels);
+        var endIndex = input.LastIndexOfAny(Vowels);
+        return input.Substring(startIndex, endIndex - startIndex+1);
     }
 }
