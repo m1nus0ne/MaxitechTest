@@ -21,32 +21,36 @@ public static class Program
         else
         {
             var result = GetReversed(input);
-            Console.WriteLine(result);
+            Console.WriteLine($"Обработанная строка: {result}");
 
             var stats = CountCharacters(result);
+            Console.WriteLine("Статистика символов:");
             foreach (var stat in stats)
             {
                 Console.WriteLine($"{stat.Key}: {stat.Value}");
             }
-
-            Console.WriteLine(MaxVowelsSubstring(result));
+            
+            var maxVowels = MaxVowelsSubstring(result);
+            Console.WriteLine($"Подстрока с началом и концом из гласных: {maxVowels}");
 
             Console.WriteLine("Сортировать с помощью быстрой сортировки(1) или деревом(2)?");
             var sortMethod = Console.ReadLine();
             if (sortMethod == "1")
             {
                 var sortedResult = SortingAlgorithms.QuickSort(result);
-                Console.WriteLine(sortedResult);
+                Console.WriteLine($"Упорядоченная строка: {sortedResult}");
             }
             else if (sortMethod == "2")
             {
                 var sortedResult = SortingAlgorithms.TreeSort(result);
-                Console.WriteLine(sortedResult);
+                Console.WriteLine($"Упорядоченная строка: {sortedResult}");
             }
             else
             {
                 Console.WriteLine("Неправильный ввод");
             }
+            string trimmedResult = RemoveRandomCharacter(result);
+            Console.WriteLine($"Урезанная обработанная строка: {trimmedResult}");
         }
     }
 
@@ -83,6 +87,12 @@ public static class Program
         }
 
         return counts;
+    }
+    private static string RemoveRandomCharacter(string input)
+    {
+        var randomApi = new RandomApi();
+        var index =  randomApi.GetRandomNumber(input.Length).GetAwaiter().GetResult();
+        return input.Remove(index, 1);
     }
 
     private static string MaxVowelsSubstring(string input)
