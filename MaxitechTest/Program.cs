@@ -27,8 +27,27 @@ public static class Program
             foreach (var stat in stats)
             {
                 Console.WriteLine($"{stat.Key}: {stat.Value}");
-            };
+            }
+
+            ;
             Console.WriteLine(MaxVowelsSubstring(result));
+
+            Console.WriteLine("Сортировать с помощью быстрой сортировки(1) или деревом(2)?");
+            var sortMethod = Console.ReadLine();
+            if (sortMethod == "1")
+            {
+                var sortedResult = SortingAlgorithms.QuickSort(result);
+                Console.WriteLine(sortedResult);
+            }
+            else if (sortMethod == "2")
+            {
+                var sortedResult = SortingAlgorithms.TreeSort(result);
+                Console.WriteLine(sortedResult);
+            }
+            else
+            {
+                Console.WriteLine("Неправильный ввод");
+            }
         }
     }
 
@@ -51,8 +70,10 @@ public static class Program
                 result.Append(input[i]);
             result.Append(input);
         }
+
         return result.ToString();
     }
+
     private static Dictionary<char, int> CountCharacters(string input)
     {
         var counts = new Dictionary<char, int>();
@@ -61,6 +82,7 @@ public static class Program
             if (!counts.TryAdd(ch, 1))
                 counts[ch]++;
         }
+
         return counts;
     }
 
@@ -68,6 +90,6 @@ public static class Program
     {
         var startIndex = input.IndexOfAny(Vowels);
         var endIndex = input.LastIndexOfAny(Vowels);
-        return input.Substring(startIndex, endIndex - startIndex+1);
+        return input.Substring(startIndex, endIndex - startIndex + 1);
     }
 }
