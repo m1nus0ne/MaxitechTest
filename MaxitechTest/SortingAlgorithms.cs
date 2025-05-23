@@ -42,14 +42,12 @@ public static class SortingAlgorithms
     {
         if (string.IsNullOrEmpty(input)) return input;
 
-        var root = new Node(input[0]);
-        for (int i = 1; i < input.Length; i++)
+        var tree = new Tree();
+        foreach (var ch in input)
         {
-            root.Insert(input[i]);
+            tree.Insert(ch);
         }
 
-        var sortedList = new List<char>();
-        root.InOrderTraversal(sortedList);
-        return new string(sortedList.ToArray());
+        return new string(tree.InOrderTraversal().ToArray());
     }
 }

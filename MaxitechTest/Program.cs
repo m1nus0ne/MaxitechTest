@@ -4,89 +4,70 @@ namespace MaxitechTest;
 
 public static class Program
 {
-    private static char[] Vowels { get; } = ['a', 'e', 'i', 'o', 'u', 'y'];
+    private static readonly char[] vowels = ['a', 'e', 'i', 'o', 'u'];
 
     public static void Main(string[] args)
     {
         var input = Console.ReadLine();
-        if (string.IsNullOrEmpty(input))
+        if (!IsValidInput(input))
             return;
 
-        var invalidChars = input.Where(ch => ch is < 'a' or > 'z').ToArray();
+        var reversedString = GetReversed(input!);
+        Console.WriteLine(reversedString);
 
+        var stats = CountCharacters(reversedString);
+        foreach (var stat in stats)
+        {
+            Console.WriteLine($"{stat.Key}: {stat.Value}");
+        }
+
+        Console.WriteLine(MaxVowelsSubstring(reversedString));
+
+        Console.WriteLine("Сортировать с помощью быстрой сортировки(1) или деревом(2)?");
+        switch (Console.ReadLine())
+        {
+            case "1":
+                Console.WriteLine(SortingAlgorithms.QuickSort(reversedString));
+                break;
+            case "2":
+                Console.WriteLine(SortingAlgorithms.TreeSort(reversedString));
+                break;
+            default:
+                Console.WriteLine("Неправильный ввод");
+                break;
+                
+        }
+        
+    }
+
+    private static bool IsValidInput(string? input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return false;
+
+        var invalidChars = input.Where(ch => ch is < 'a' or > 'z').ToArray();
         if (invalidChars.Length != 0)
         {
             Console.WriteLine("Введены неподходящие символы: " + new string(invalidChars));
+            return false;
         }
-        else
-        {
-            var result = GetReversed(input);
-            Console.WriteLine($"Обработанная строка: {result}");
 
-            var stats = CountCharacters(result);
-            Console.WriteLine("Статистика символов:");
-            foreach (var stat in stats)
-            {
-                Console.WriteLine($"{stat.Key}: {stat.Value}");
-            }
-            
-            var maxVowels = MaxVowelsSubstring(result);
-            Console.WriteLine($"Подстрока с началом и концом из гласных: {maxVowels}");
-
-            Console.WriteLine("Сортировать с помощью быстрой сортировки(1) или деревом(2)?");
-            var sortMethod = Console.ReadLine();
-            if (sortMethod == "1")
-            {
-                var sortedResult = SortingAlgorithms.QuickSort(result);
-                Console.WriteLine($"Упорядоченная строка: {sortedResult}");
-            }
-            else if (sortMethod == "2")
-            {
-                var sortedResult = SortingAlgorithms.TreeSort(result);
-                Console.WriteLine($"Упорядоченная строка: {sortedResult}");
-            }
-            else
-            {
-                Console.WriteLine("Неправильный ввод");
-            }
-            string trimmedResult = RemoveRandomCharacter(result);
-            Console.WriteLine($"Урезанная обработанная строка: {trimmedResult}");
-        }
+        return true;
     }
 
     private static string GetReversed(string input)
     {
-        var n = input.Length;
-        var result = new StringBuilder { Capacity = 2 * n };
-
-        if (n % 2 == 0)
-        {
-            var half = n / 2;
-            for (int i = half - 1; i >= 0; i--)
-                result.Append(input[i]);
-            for (int i = n - 1; i >= half; i--)
-                result.Append(input[i]);
-        }
-        else
-        {
-            for (int i = n - 1; i >= 0; i--)
-                result.Append(input[i]);
-            result.Append(input);
-        }
-
-        return result.ToString();
+        var chars = input.ToCharArray();
+        Array.Reverse(chars);
+        return new string(chars);
     }
 
     private static Dictionary<char, int> CountCharacters(string input)
     {
-        var counts = new Dictionary<char, int>();
-        foreach (var ch in input)
-        {
-            if (!counts.TryAdd(ch, 1))
-                counts[ch]++;
-        }
-
-        return counts;
+        return input
+            .GroupBy(c => c)
+            .Select(c => new { c.Key, Value = c.Count() })
+            .ToDictionary(x => x.Key, x => x.Value);
     }
     private static string RemoveRandomCharacter(string input)
     {
@@ -97,8 +78,10 @@ public static class Program
 
     private static string MaxVowelsSubstring(string input)
     {
-        var startIndex = input.IndexOfAny(Vowels);
-        var endIndex = input.LastIndexOfAny(Vowels);
+        var startIndex = input.IndexOfAny(vowels);
+        if (startIndex == -1)
+            return string.Empty;
+        var endIndex = input.LastIndexOfAny(vowels);
         return input.Substring(startIndex, endIndex - startIndex + 1);
     }
 }
