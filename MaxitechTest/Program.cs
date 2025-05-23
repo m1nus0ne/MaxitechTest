@@ -5,6 +5,7 @@ namespace MaxitechTest;
 public static class Program
 {
     private static readonly char[] vowels = ['a', 'e', 'i', 'o', 'u'];
+    private static RandomService randomService = new ();
 
     public static void Main(string[] args)
     {
@@ -13,31 +14,34 @@ public static class Program
             return;
 
         var reversedString = GetReversed(input!);
-        Console.WriteLine(reversedString);
+        Console.WriteLine($"Реверсированная строка: {reversedString}");
 
         var stats = CountCharacters(reversedString);
+        Console.WriteLine("Статистика символов:");
         foreach (var stat in stats)
         {
             Console.WriteLine($"{stat.Key}: {stat.Value}");
         }
 
-        Console.WriteLine(MaxVowelsSubstring(reversedString));
+        Console.WriteLine($"Максимальная подстрока с началом и концом из гласных: {MaxVowelsSubstring(reversedString)}");
 
         Console.WriteLine("Сортировать с помощью быстрой сортировки(1) или деревом(2)?");
         switch (Console.ReadLine())
         {
             case "1":
-                Console.WriteLine(SortingAlgorithms.QuickSort(reversedString));
+                Console.WriteLine($"Упорядоченная строка: {SortingAlgorithms.QuickSort(reversedString)}");
                 break;
             case "2":
-                Console.WriteLine(SortingAlgorithms.TreeSort(reversedString));
+                Console.WriteLine($"Упорядоченная строка: {SortingAlgorithms.TreeSort(reversedString)}");
                 break;
             default:
                 Console.WriteLine("Неправильный ввод");
                 break;
-                
         }
-        
+
+        string trimmedResult = RemoveRandomCharacter(reversedString);
+        Console.WriteLine($"Урезанная обработанная строка: {trimmedResult}");
+
     }
 
     private static bool IsValidInput(string? input)
@@ -71,8 +75,7 @@ public static class Program
     }
     private static string RemoveRandomCharacter(string input)
     {
-        var randomApi = new RandomApi();
-        var index =  randomApi.GetRandomNumber(input.Length).GetAwaiter().GetResult();
+        var index = randomService.GetRandomNumber(input.Length);
         return input.Remove(index, 1);
     }
 
