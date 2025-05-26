@@ -1,9 +1,8 @@
-using System.Net.Http;
 using System.Text.Json;
 
-namespace MaxitechTest;
+namespace WebApi.Services;
 
-public class RandomApi(string apiUrl = "http://www.randomnumberapi.com/api/v1.0/random")
+public class RandomApiService(string apiUrl = "http://www.randomnumberapi.com/api/v1.0/random") : IRandomApiService
 {
     private readonly HttpClient _httpClient = new();
 
