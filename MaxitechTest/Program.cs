@@ -35,21 +35,25 @@ public static class Program
 
             Console.WriteLine("Сортировать с помощью быстрой сортировки(1) или деревом(2)?");
             var sortMethod = Console.ReadLine();
-            if (sortMethod == "1")
+            switch (sortMethod)
             {
-                var sortedResult = SortingAlgorithms.QuickSort(result);
-                Console.WriteLine($"Упорядоченная строка: {sortedResult}");
+                case "1":
+                {
+                    var sortedResult = SortingAlgorithms.QuickSort(result);
+                    Console.WriteLine($"Упорядоченная строка: {sortedResult}");
+                    break;
+                }
+                case "2":
+                {
+                    var sortedResult = SortingAlgorithms.TreeSort(result);
+                    Console.WriteLine($"Упорядоченная строка: {sortedResult}");
+                    break;
+                }
+                default:
+                    Console.WriteLine("Неправильный ввод");
+                    break;
             }
-            else if (sortMethod == "2")
-            {
-                var sortedResult = SortingAlgorithms.TreeSort(result);
-                Console.WriteLine($"Упорядоченная строка: {sortedResult}");
-            }
-            else
-            {
-                Console.WriteLine("Неправильный ввод");
-            }
-            string trimmedResult = RemoveRandomCharacter(result);
+            var trimmedResult = RemoveRandomCharacter(result);
             Console.WriteLine($"Урезанная обработанная строка: {trimmedResult}");
         }
     }
@@ -98,6 +102,8 @@ public static class Program
     private static string MaxVowelsSubstring(string input)
     {
         var startIndex = input.IndexOfAny(Vowels);
+        if (startIndex == -1)
+            return string.Empty;
         var endIndex = input.LastIndexOfAny(Vowels);
         return input.Substring(startIndex, endIndex - startIndex + 1);
     }

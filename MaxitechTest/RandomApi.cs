@@ -15,21 +15,21 @@ public class RandomApi(string apiUrl = "http://www.randomnumberapi.com/api/v1.0/
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
-            
+
             var jsonResponse = await response.Content.ReadAsStringAsync();
             var numbers = JsonSerializer.Deserialize<int[]>(jsonResponse);
-            
+
             if (numbers is not null && numbers.Length > 0)
                 return numbers[0];
-            
-            return GetRandomNumberFallback(maxExclusive);
         }
         catch (Exception)
         {
             return GetRandomNumberFallback(maxExclusive);
         }
+
+        return GetRandomNumberFallback(maxExclusive);
     }
-    
+
     private int GetRandomNumberFallback(int maxExclusive)
     {
         return Random.Shared.Next(maxExclusive);
