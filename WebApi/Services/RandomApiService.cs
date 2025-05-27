@@ -2,12 +2,24 @@ using System.Text.Json;
 
 namespace WebApi.Services;
 
-public class RandomApiService(string apiUrl = "http://www.randomnumberapi.com/api/v1.0/random") : IRandomApiService
+public class RandomApiService(
+    IHttpClientFactory httpClientFactory,
+    IConfiguration configuration)
+    : IRandomApiService
 {
-    private readonly HttpClient _httpClient = new();
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("RandomApi");
+
+    private readonly string apiUrl = configuration.GetValue<string>("RandomApi:BaseUrl") ??
+                                      "https://www.randomnumberapi.com/api/v1.0/random";
 
     public async Task<int> GetRandomNumber(int maxExclusive)
     {
+        if (maxExclusive <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxExclusive),
+                "Максимальное значение должно быть положительным");
+        }
+
         try
         {
             var url = $"{apiUrl}?min=0&max={maxExclusive - 1}&count=1";
@@ -17,19 +29,19 @@ public class RandomApiService(string apiUrl = "http://www.randomnumberapi.com/ap
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             var numbers = JsonSerializer.Deserialize<int[]>(jsonResponse);
-
             if (numbers is not null && numbers.Length > 0)
+            {
                 return numbers[0];
+            }
+            return GetRandomNumberFallback(maxExclusive);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return GetRandomNumberFallback(maxExclusive);
         }
-
-        return GetRandomNumberFallback(maxExclusive);
     }
 
-    private int GetRandomNumberFallback(int maxExclusive)
+    private static int GetRandomNumberFallback(int maxExclusive)
     {
         return Random.Shared.Next(maxExclusive);
     }
