@@ -2,15 +2,9 @@ using System.Text.Json;
 
 namespace WebApi.Services;
 
-public class RandomApiService(
-    IHttpClientFactory httpClientFactory,
-    IConfiguration configuration)
-    : IRandomApiService
+public class RandomApiService(IHttpClientFactory httpClientFactory) : IRandomApiService
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("RandomApi");
-
-    private readonly string apiUrl = configuration.GetValue<string>("RandomApi:BaseUrl") ??
-                                      "https://www.randomnumberapi.com/api/v1.0/random";
 
     public async Task<int> GetRandomNumber(int maxExclusive)
     {
@@ -22,7 +16,7 @@ public class RandomApiService(
 
         try
         {
-            var url = $"{apiUrl}?min=0&max={maxExclusive - 1}&count=1";
+            var url = $"?min=0&max={maxExclusive - 1}&count=1";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();

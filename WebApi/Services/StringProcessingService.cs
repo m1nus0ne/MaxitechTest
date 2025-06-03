@@ -3,8 +3,12 @@ using MaxitechTest;
 
 namespace WebApi.Services;
 
-public class StringProcessingService(IRandomApiService randomApi) : IStringProcessingService
+public class StringProcessingService(IRandomApiService randomApi, IConfiguration configuration)
+    : IStringProcessingService
 {
+    private readonly HashSet<string> _blacklistedWords = new(
+        configuration.GetSection("BlackList").Get<string[]>() ?? []);
+
     private static readonly char[] Vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
 
     public string GetReversed(string input)
@@ -67,9 +71,14 @@ public class StringProcessingService(IRandomApiService randomApi) : IStringProce
         return input.Remove(index, 1);
     }
 
-    public bool ValidateInput(string input, out char[] invalidChars)
+    public bool ValidateInputChars(string input, out char[] invalidChars)
     {
         invalidChars = input.Where(ch => ch is < 'a' or > 'z').ToArray();
         return invalidChars.Length == 0;
+    }
+
+    public bool ValidateInputWords(string input)
+    {
+        return !_blacklistedWords.Contains(input);
     }
 }
