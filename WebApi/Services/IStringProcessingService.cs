@@ -8,5 +8,6 @@ public interface IStringProcessingService
     string QuickSort(string input);
     string TreeSort(string input);
     Task<string> RemoveRandomCharacter(string input);
-    bool ValidateInput(string input, out char[] invalidChars);
+    bool ValidateInputChars(string input, out char[] invalidChars);
+    bool ValidateInputWords(string input);
 }

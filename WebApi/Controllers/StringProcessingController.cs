@@ -14,9 +14,13 @@ public class StringProcessingController(IStringProcessingService stringService) 
         if (string.IsNullOrEmpty(request.Input))
             return BadRequest("Входная строка не может быть пустой");
 
-        if (!stringService.ValidateInput(request.Input, out var invalidChars))
+        if (!stringService.ValidateInputChars(request.Input, out var invalidChars))
         {
             return BadRequest("Введены неподходящие символы: " + new string(invalidChars));
+        }
+        if (!stringService.ValidateInputWords(request.Input))
+        {
+            return BadRequest("Данное слово содержится в черном списке.");
         }
 
         var reversedString = stringService.GetReversed(request.Input);
@@ -44,4 +48,3 @@ public class StringProcessingController(IStringProcessingService stringService) 
         return Ok(result);
     }
 }
-
